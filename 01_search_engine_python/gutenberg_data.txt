@@ -1,0 +1,29 @@
+{'ID': 1, 'title': 'Frankenstein; Or, The Modern Prometheus', 'author': 'Mary Wollstonecraft Shelley', 'release_date': 'October 1, 1993 [eBook #84]', 'language': 'English'}
+{'ID': 2, 'title': 'Romeo and Juliet', 'author': 'William Shakespeare', 'release_date': 'November 1, 1998 [eBook #1513]', 'language': 'English'}
+{'ID': 3, 'title': 'Pride and Prejudice', 'author': 'Jane Austen', 'release_date': 'June 1, 1998 [eBook #1342]', 'language': 'English'}
+{'ID': 4, 'title': 'Moby Dick; Or, The Whale', 'author': 'Herman Melville', 'release_date': 'July 1, 2001 [eBook #2701]', 'language': 'English'}
+{'ID': 1, 'title': 'Frankenstein; Or, The Modern Prometheus', 'author': 'Mary Wollstonecraft Shelley', 'release_date': 'October 1, 1993 [eBook #84]', 'language': 'English'}
+{'ID': 2, 'title': 'Romeo and Juliet', 'author': 'William Shakespeare', 'release_date': 'November 1, 1998 [eBook #1513]', 'language': 'English'}
+{'ID': 3, 'title': 'Pride and Prejudice', 'author': 'Jane Austen', 'release_date': 'June 1, 1998 [eBook #1342]', 'language': 'English'}
+{'ID': 4, 'title': 'Moby Dick; Or, The Whale', 'author': 'Herman Melville', 'release_date': 'July 1, 2001 [eBook #2701]', 'language': 'English'}
+{'ID': 5, 'title': 'Middlemarch', 'author': 'George Eliot', 'release_date': 'July 1, 1994 [eBook #145]', 'language': 'English'}
+{'ID': 6, 'title': 'The Complete Works of William Shakespeare', 'author': 'William Shakespeare', 'release_date': 'January 1, 1994 [eBook #100]', 'language': 'English'}
+{'ID': 7, 'title': 'A Room with a View', 'author': 'E. M. Forster', 'release_date': 'May 1, 2001 [eBook #2641]', 'language': 'English'}
+{'ID': 8, 'title': "Alice's Adventures in Wonderland", 'author': 'Lewis Carroll', 'release_date': 'June 27, 2008 [eBook #11]', 'language': 'English'}
+{'ID': 9, 'title': 'Little Women; Or, Meg, Jo, Beth, and Amy', 'author': 'Louisa May Alcott', 'release_date': 'August 16, 2011 [eBook #37106]', 'language': 'English'}
+{'ID': 10, 'title': 'The Enchanted April', 'author': 'Elizabeth Von Arnim', 'release_date': 'July 29, 2005 [eBook #16389]', 'language': 'English'}
+{'ID': 11, 'title': 'The Blue Castle: a novel', 'author': 'L. M. Montgomery', 'release_date': 'May 3, 2022 [eBook #67979]', 'language': 'English'}
+{'ID': 12, 'title': 'The Adventures of Ferdinand Count Fathom — Complete', 'author': 'T. Smollett', 'release_date': 'September 9, 2004 [eBook #6761]', 'language': 'English'}
+{'ID': 13, 'title': 'Cranford', 'author': 'Elizabeth Cleghorn Gaskell', 'release_date': 'January 1, 1996 [eBook #394]', 'language': 'English'}
+{'ID': 14, 'title': 'The Expedition of Humphry Clinker', 'author': 'T. Smollett', 'release_date': 'April 1, 2000 [eBook #2160]', 'language': 'English'}
+{'ID': 15, 'title': 'History of Tom Jones, a Foundling', 'author': 'Henry Fielding', 'release_date': 'September 1, 2004 [eBook #6593]', 'language': 'English'}
+{'ID': 16, 'title': 'The Adventures of Roderick Random', 'author': 'T. Smollett', 'release_date': 'May 1, 2003 [eBook #4085]', 'language': 'English'}
+{'ID': 17, 'title': 'My Life — Volume 1', 'author': 'Richard Wagner', 'release_date': 'February 1, 2004 [eBook #5197]', 'language': 'English'}
+{'ID': 18, 'title': 'Twenty years after', 'author': 'Alexandre Dumas', 'release_date': 'March 1, 1998 [eBook #1259]', 'language': 'English'}
+{'ID': 19, 'title': 'The Scarlet Letter', 'author': 'Nathaniel Hawthorne', 'release_date': 'May 5, 2008 [eBook #25344]', 'language': 'English'}
+{'ID': 20, 'title': "A Doll's House : a play", 'author': 'Henrik Ibsen', 'release_date': 'March 1, 2001 [eBook #2542]', 'language': 'English'}
+{'ID': 21, 'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald', 'release_date': 'January 17, 2021 [eBook #64317]', 'language': 'English'}
+{'ID': 22, 'title': 'The Yellow Wallpaper', 'author': 'Charlotte Perkins Gilman', 'release_date': 'November 1, 1999 [eBook #1952]', 'language': 'English'}
+{'ID': 23, 'title': 'Metamorphosis', 'author': 'Franz Kafka', 'release_date': 'August 17, 2005 [eBook #5200]', 'language': 'English'}
+{'ID': 24, 'title': 'Beowulf: An Anglo-Saxon Epic Poem', 'author': 'Unknown Author', 'release_date': 'July 19, 2005 [eBook #16328]', 'language': 'English'}
+{'ID': 25, 'title': 'Dracula', 'author': 'Bram Stoker', 'release_date': 'October 1, 1995 [eBook #345]', 'language': 'English'}
