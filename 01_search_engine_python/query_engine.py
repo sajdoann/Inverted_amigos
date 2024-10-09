@@ -18,8 +18,6 @@ class QueryEngine:
         word = word.lower()
         if word in self.inverted_index:
             return self.inverted_index[word]
-        else:
-            return f"'{word}' not found in the index."
 
     def get_indexes_of_books_with_metadata(self, field, value) -> list:
         results = [
@@ -29,8 +27,6 @@ class QueryEngine:
         ]
         if results:
             return results
-        else:
-            return f'No matches found for {value} in {field}'
 
 
 if __name__ == "__main__":
