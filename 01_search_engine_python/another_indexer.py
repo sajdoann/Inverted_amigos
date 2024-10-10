@@ -10,8 +10,8 @@ import os
 import json
 
 def remove_punctuation(text):
-    text = re.sub(r'[^\w\s]', '', text).replace("_", " ")
-    return re.sub(r'\d+', '', text)
+    text = re.sub(r'[^\w\s]', ' ', text).replace("_", " ")
+    return re.sub(r'\d+', ' ', text)
 
 def to_lower_case(text):
     return text.lower()
@@ -23,7 +23,10 @@ def tokenize(text):
         if word == '|':
             pass
         else:
-            phrase[word] = counter
+            if word in phrase:
+                phrase[word].append(counter)
+            else:
+                phrase[word] = [counter]
         counter += 1
     return phrase
 
@@ -38,10 +41,12 @@ def remove_stopwords(text):
     return result
 
 
-def insert_document(doc_ID: int, text: list, dictionary: dict) -> dict:
+def insert_document(doc_ID: int, text: dict, dictionary: dict) -> dict:
     for word in text:
         if word in dictionary:
-            dictionary[word].append((doc_ID, text[word]))
+            print(word)
+            print(dictionary[word])
+            dictionary[word] = dictionary[word].append((doc_ID, text[word]))
         else:
             dictionary[word] = [(doc_ID, text[word])]
     return dictionary
@@ -73,5 +78,5 @@ if __name__ == '__main__':
         content = remove_stopwords(content)
         content = tokenize(content)
         inverted_index = insert_document(doc_id, content, inverted_index)
-    with open('another_inverted_index.json', 'w', encoding='utf-8') as json_file:
-        json.dump(dict(inverted_index), json_file, ensure_ascii=False, indent=4)
+        with open('another_inverted_index.json', 'a', encoding='utf-8') as json_file:
+            json.dump(dict(inverted_index), json_file, ensure_ascii=False, indent=4)
