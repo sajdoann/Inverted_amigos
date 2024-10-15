@@ -10,13 +10,17 @@ import os
 import json
 import hashlib
 import pickle
+from concurrent.futures import ThreadPoolExecutor
 
-def remove_punctuation(text):
-    text = re.sub(r'[^\w\s]', ' ', text).replace("_", " ")
-    return re.sub(r'\d+', ' ', text)
-
-def to_lower_case(text):
-    return text.lower()
+def preprocess_text(text):
+    stop_words = set(stopwords.words('english'))
+    text = re.sub(r'[^\w\s]', ' ', text).replace("_", " ")  # Eliminar puntuación
+    text = re.sub(r'\d+', ' ', text)  # Eliminar números
+    result = []
+    for word in text.lower().split():  # Convertir a minúsculas y dividir en palabras
+        if word not in stop_words:
+            result.append(word)
+    return result
 
 def tokenize(text):
     counter = 1
@@ -32,16 +36,6 @@ def tokenize(text):
         counter += 1
     return phrase
 
-def remove_stopwords(text):
-    stop_words = set(stopwords.words('english'))
-    result = []
-    for word in text.split():
-        if word in stop_words:
-            result.append("|")
-        else:
-            result.append(word)
-    return result
-
 def get_hash(word, num_buckets):
     # Usamos hashlib para generar un hash de la palabra
     hash_object = hashlib.sha1(word.encode())
@@ -50,32 +44,93 @@ def get_hash(word, num_buckets):
     # Convertimos a un entero y lo usamos para distribuir en los "buckets"
     return int(hex_dig, 16) % num_buckets
 
-def save_word_to_hashed_file(word, data, base_dir, num_buckets=10):
-    bucket = get_hash(word, num_buckets)
-    path = os.path.join(base_dir, f'bucket_{bucket}.pkl')
+def save_word_to_hashed_file(word, data, file_data):
+    if word not in file_data:
+        file_data[word] = data
+    else:
+        file_data[word].extend(data)
 
-    # Si el archivo no existe, crearlo
+def safe_pickle_load(filepath):
+    # Verificar si el archivo existe y tiene contenido
+    if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+        with open(filepath, 'rb') as f:
+            return pickle.load(f)
+    else:
+        return {}
+
+def save_bucket_to_file(bucket_data, bucket_id, base_dir):
+    path = os.path.join(base_dir, f'bucket_{bucket_id}.pkl')
+
+    # Cargar los datos actuales del archivo si existe
     if os.path.exists(path):
         with open(path, 'rb') as f:
             file_data = pickle.load(f)
     else:
         file_data = {}
 
-    # Añadir o actualizar la palabra
-    if word not in file_data:
-        file_data[word] = data
-    else:
-        file_data[word].extend(data)
+    # Actualizar el archivo con los nuevos datos del bucket
+    for word, data in bucket_data.items():
+        if word in file_data:
+            file_data[word].extend(data)
+        else:
+            file_data[word] = data
 
-    # Escribir de nuevo al archivo usando pickle
+    # Guardar los cambios en el archivo
     with open(path, 'wb') as f:
         pickle.dump(file_data, f)
 
+def process_buckets(batch_data, base_dir, num_buckets=10):
+    # Crear un pool de hilos
+    with ThreadPoolExecutor(max_workers=num_buckets) as executor:
+        futures = []
+        for bucket_id in range(num_buckets):
+            # Filtrar las palabras que pertenecen a este bucket
+            bucket_data = {word: data for word, data in batch_data.items() if get_hash(word, num_buckets) == bucket_id}
+            # Guardar los datos del bucket en su archivo correspondiente
+            futures.append(executor.submit(save_bucket_to_file, bucket_data, bucket_id, base_dir))
 
-def insert_document(doc_ID: int, text: dict, directory) -> dict:
-    for word in text:
-        save_word_to_hashed_file(word, [(doc_ID, text[word])], directory)
+        # Esperar a que todos los hilos terminen
+        for future in futures:
+            future.result()
 
+# Clasificación previa de palabras en buckets
+def classify_words_in_buckets(text, doc_ID, num_buckets=10):
+    batch_data = {}
+    for word, positions in text.items():
+        bucket_id = get_hash(word, num_buckets)
+        if word not in batch_data:
+            batch_data[word] = [(doc_ID, positions)]
+        else:
+            batch_data[word].extend([(doc_ID, positions)])
+    return batch_data
+
+# Función principal para insertar documentos
+def insert_document(doc_ID, text, directory, num_buckets=10):
+    batch_data = classify_words_in_buckets(text, doc_ID, num_buckets)
+    process_buckets(batch_data, directory, num_buckets)
+
+def load_bucket(bucket_id, base_dir):
+    path = os.path.join(base_dir, f'bucket_{bucket_id}.pkl')
+
+    # Si el archivo existe, cargar los datos, si no, devolver diccionario vacío
+    if os.path.exists(path):
+        with open(path, 'rb') as f:
+            return pickle.load(f)
+    return {}
+
+# Función para buscar una palabra
+def search_word(word, base_dir, num_buckets=10):
+    # Determinar el bucket correspondiente a la palabra
+    bucket_id = get_hash(word, num_buckets)
+    
+    # Cargar los datos del bucket correspondiente
+    bucket_data = load_bucket(bucket_id, base_dir)
+    
+    # Buscar la palabra en el bucket
+    if word in bucket_data:
+        return bucket_data[word]  # Retorna las ocurrencias de la palabra
+    else:
+        return None  # Si no se encuentra la palabra, devolver None
 
 if __name__ == '__main__':
     # Load documents from the gutenberg_books folder
@@ -95,8 +150,8 @@ if __name__ == '__main__':
         
     for doc_id, content in documents.items():
         print(doc_id)
-        content = remove_punctuation(content)
-        content = to_lower_case(content)
-        content = remove_stopwords(content)
+        content = preprocess_text(content)
         content = tokenize(content)
         inverted_index = insert_document(doc_id, content, datamart)
+    
+    print(search_word('house', datamart))
