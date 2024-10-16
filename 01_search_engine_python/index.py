@@ -65,7 +65,7 @@ def create_inverted_index(documents, book_metadata):
     return trie
 
 # Specify the directory where the books are stored
-directory = r"C:\University\Big Data\Inverted Amigos\gutenberg_books"
+directory = r"C:\University\Big Data\Inverted Amigos\Inverted_amigos\01_search_engine_python\gutenberg_books"
 
 # Read the documents from the specified directory and get their IDs and titles
 documents, book_metadata = read_documents_from_directory(directory)
@@ -74,7 +74,7 @@ documents, book_metadata = read_documents_from_directory(directory)
 inverted_index = create_inverted_index(documents, book_metadata)
 
 # Example of searching for a word in the Trie
-word_to_search = "look"  # You can change the search term as needed
+word_to_search = "stop"  # You can change the search term as needed
 book_info = inverted_index.search(word_to_search)
 
 if book_info:
