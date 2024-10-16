@@ -133,13 +133,23 @@ def search_word(word, base_dir, num_buckets=10):
         return None  # Si no se encuentra la palabra, devolver None
 
 if __name__ == '__main__':
-    # Load documents from the gutenberg_books folder
+
+     # Load documents from the gutenberg_books folder
     documents = {}
     current_dir = os.path.dirname(__file__)
-    folder = 'dummy_books'
-    datamart = os.path.join(current_dir, 'Datamart')
+    folder = 'gutenberg_books'
     folder_path = os.path.join(current_dir, folder)
     inverted_index = dict()
+
+    datamart = os.path.join(current_dir, 'Datamart')
+
+    if not os.path.exists(datamart):
+        os.makedirs(datamart)
+    else:
+        for filename in os.listdir(datamart):
+            file_path = os.path.join(datamart, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
 
     for filename in os.listdir(folder_path):
         if filename.endswith('.txt'):
