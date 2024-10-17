@@ -40,6 +40,28 @@ class QueryEngine:
         else:
             raise ValueError("There are no available indexers with this name.")
 
+    def search_multiple_words(self, words: list, indexer: Indexer) -> list[tuple]:
+        all_results = [self.search(word, indexer) for word in words]
+        return self._compile_results_for_many_words(all_results)
+        
+    def _compile_results_for_many_words(self, results : list[list[tuple]]) -> list[tuple]:
+        compiled_results = []
+        different_words_number = len(results)
+        for book_1 in results[0]:
+            book_1_id = book_1[0]
+            occurence_count = 1
+            positions = [book_1[1]]
+            for word in results[1:]:
+                for book_2 in word:
+                    book_2_id = book_2[0]
+                    if book_2_id == book_1_id:
+                        occurence_count += 1
+                        positions.append(book_2[1])
+                        break
+            if occurence_count == different_words_number:
+                compiled_results.append((book_1_id, positions))
+        return compiled_results
+
     def load_metadata_from_file(self, file_path):
         self.metadata = []
         with open(file_path, "r", encoding="utf-8") as file:
@@ -47,9 +69,7 @@ class QueryEngine:
                 entry = ast.literal_eval(line.strip())
                 self.metadata.append(entry)
 
-    def filter_with_metadata(
-        self, field: Field, value: str, results: list
-    ) -> list:
+    def filter_with_metadata(self, field: Field, value: str, results: list) -> list:
         """
         for now we just check if the field contains the value
         @TODO
