@@ -1,6 +1,16 @@
 import os
 import ast
 from enum import Enum
+from trie_searcher import load_trie_from_file
+
+# These paths are relative from this script directory
+PATH_TO_TRIE_INDEXER_FILE = "trie_index.json"
+PATH_TO_DATAMART = "Datamart"
+
+
+class Indexer(Enum):
+    TRIE = 0
+    HASHED = 1
 
 
 class Field(Enum):
@@ -16,6 +26,13 @@ class QueryEngine:
         self.script_dir = os.path.dirname(__file__)
         self.metadata = None
 
+    def search(self, word, indexer: Indexer):
+        if indexer == Indexer.TRIE:
+            path = os.path.join(self.script_dir, PATH_TO_TRIE_INDEXER_FILE)
+            inverted_index = load_trie_from_file(path)
+            results = inverted_index.search(word)
+            return results
+        
     def load_metadata_from_file(self, file_path):
         self.metadata = []
         with open(file_path, "r", encoding="utf-8") as file:
@@ -73,9 +90,11 @@ class QueryEngine:
 
 if __name__ == "__main__":
     query_engine = QueryEngine()
-    res = [(11, [12, 13]), (394, [10]), (174, [12])]
+    res = query_engine.search('clock', Indexer.TRIE)
     field = Field.LANGUAGE
-    fil_res = query_engine.filter_with_metadata(field, 'Gibberish', res)
+    fil_res = query_engine.filter_with_metadata(field, 'English', res)
+    print(len(res))
+    print(res)
     print(fil_res)
     # word = ""
     # ind = 0
