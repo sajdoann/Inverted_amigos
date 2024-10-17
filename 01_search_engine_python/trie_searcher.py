@@ -36,17 +36,19 @@ def load_trie_from_file(file_path):
     trie.root = deserialize_node(trie_data)
     return trie
 
-# Example of searching for a word in the Trie
-word_to_search = "house"  # You can change the search term as needed
 
-# Load the inverted index from the file
-inverted_index = load_trie_from_file("trie_index.json")
+if __name__ == '__main__':
+    # Example of searching for a word in the Trie
+    word_to_search = "house"  # You can change the search term as needed
 
-book_info = inverted_index.search(word_to_search)
+    # Load the inverted index from the file
+    inverted_index = load_trie_from_file("trie_index.json")
 
-if book_info:
-    print(f"The word '{word_to_search}' is found in the following books:")
-    for book_id, positions in book_info.items():
-        print(f"Book ID: {book_id}, Positions: {positions}")
-else:
-    print(f"'{word_to_search}' not found in the documents.")
+    book_info = inverted_index.search(word_to_search)
+
+    if book_info:
+        print(f"The word '{word_to_search}' is found in the following books:")
+        for book_id, positions in book_info.items():
+            print(f"Book ID: {book_id}, Positions: {positions}")
+    else:
+        print(f"'{word_to_search}' not found in the documents.")
