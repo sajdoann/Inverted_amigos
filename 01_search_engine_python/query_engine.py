@@ -1,5 +1,6 @@
 import json
 import ast
+import os
 
 
 class QueryEngine:
@@ -27,15 +28,31 @@ class QueryEngine:
         ]
         if results:
             return results
+        
+    def get_part_of_book_with_word(self, book_id: int, word_id: int) -> tuple[str, int]:
+        script_dir = os.path.dirname(__file__)
+        file_relative_path = "gutenberg_books/"+str(book_id) + "_.txt"
+        file_path = os.path.join(script_dir, file_relative_path)
+        with open(file_path, "r") as file:
+            curr_pos = 0
+            while True:
+                line = file.readline()
+                if not line:
+                    break
+                line = line.split()
+                curr_pos += len(line)
+                if curr_pos > word_id:
+                    position = word_id - curr_pos
+                    return " ".join(line), position
+                
+    def print_coloured(self, line_list: list, position: int) -> None:
+        GREEN = "\33[32m"
+        RESET = "\033[0m"
+        line_list[position] = f"{GREEN}{line_list[position]}{RESET}"
+        print(" ".join(line_list))
 
 
 if __name__ == "__main__":
     query_engine = QueryEngine()
-    query_engine.load_inverted_index_from_file('inverted_index.json')
-    query_engine.load_metadata_from_file('gutenberg_data.txt')
-    word = 'word'
-    result = query_engine.get_indexes_of_books_with(word)
-    print(f"Documents containing '{word}': {result}")
-    field, value = ('author', 'Elizabeth Cleghorn Gaskell')
-    result = query_engine.get_indexes_of_books_with_metadata(field, value)
-    print(result)
+    line, pos = query_engine.get_part_of_book_with_word(100, 5600)
+    query_engine.print_coloured(line.split(), pos)
