@@ -14,26 +14,26 @@ from concurrent.futures import ThreadPoolExecutor
 
 def preprocess_text(text):
     stop_words = set(stopwords.words('english'))
-    text = re.sub(r'[^\w\s]', ' ', text).replace("_", " ")  # Eliminar puntuación
-    text = re.sub(r'\d+', ' ', text)  # Eliminar números
     result = []
-    for word in text.lower().split():  # Convertir a minúsculas y dividir en palabras
-        if word not in stop_words:
-            result.append(word)
+    for word in text.lower().split():
+        if word in stop_words:
+            result.append('|')
+        else :
+            result.append(word.replace("_", "").replace(".", "").replace(",", "").replace(";", "").replace("\u2019", "'"))
+
+    print(len(result))
     return result
 
 def tokenize(text):
-    counter = 1
     phrase = dict()
-    for word in text:
+    for position, word in enumerate(text):
         if word == '|':
             pass
         else:
             if word in phrase:
-                phrase[word].append(counter)
+                phrase[word].append(position)
             else:
-                phrase[word] = [counter]
-        counter += 1
+                phrase[word] = [position]
     return phrase
 
 def get_hash(word, num_buckets):
@@ -128,7 +128,7 @@ def search_word(word, base_dir, num_buckets=10):
     
     # Buscar la palabra en el bucket
     if word in bucket_data:
-        return bucket_data[word]  # Retorna las ocurrencias de la palabra
+        return f'La palabra "{word}" se encuentra en los documentos: {bucket_data[word]}'
     else:
         return None  # Si no se encuentra la palabra, devolver None
 
@@ -138,18 +138,19 @@ if __name__ == '__main__':
     documents = {}
     current_dir = os.path.dirname(__file__)
     folder = 'gutenberg_books'
-    folder_path = os.path.join(current_dir, folder)
-    inverted_index = dict()
-
     datamart = os.path.join(current_dir, 'Datamart')
+    folder_path = os.path.join(current_dir, folder)
+    books_indexed = dict()
+    books_indexed_doc = os.path.join(current_dir, 'indexed_docs.txt')
 
-    if not os.path.exists(datamart):
-        os.makedirs(datamart)
+    #si el arhchivo indexed_docs.txt existe, cargar los datos, si no, lo crea
+    if os.path.exists(books_indexed_doc):
+        with open(books_indexed_doc, 'r') as file:
+            books_indexed = json.load(file)
     else:
-        for filename in os.listdir(datamart):
-            file_path = os.path.join(datamart, filename)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
+        with open(books_indexed_doc, 'w') as file:
+            json.dump(books_indexed, file)
+
 
     for filename in os.listdir(folder_path):
         if filename.endswith('.txt'):
@@ -159,9 +160,16 @@ if __name__ == '__main__':
                 documents[doc_id] = content
         
     for doc_id, content in documents.items():
+        if str(doc_id) in books_indexed:
+            print(f'Document {doc_id} already indexed!')
+            continue
         print(doc_id)
         content = preprocess_text(content)
         content = tokenize(content)
         inverted_index = insert_document(doc_id, content, datamart)
-    
-    print(search_word('house', datamart))
+        books_indexed[doc_id] = True
+        with open(books_indexed_doc, 'w') as file:
+            json.dump(books_indexed, file)
+            print(f'Document {doc_id} indexed successfully!')
+
+    print(search_word('chapter', datamart))
