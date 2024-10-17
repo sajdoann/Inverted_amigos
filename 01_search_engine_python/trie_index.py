@@ -2,6 +2,20 @@ import os
 import json
 from collections import defaultdict
 
+from nltk.corpus import stopwords
+import re
+
+
+def preprocess_text(text):
+    stop_words = set(stopwords.words('english'))
+    text = re.sub(r'[^\w\s]', ' ', text).replace("_", " ")  # Eliminar puntuación
+    text = re.sub(r'\d+', ' ', text)  # Eliminar números
+    result = []
+    for word in text.lower().split():  # Convertir a minúsculas y dividir en palabras
+        if word not in stop_words:
+            result.append(word)
+    return result
+
 # Tries (Prefix Trees)
 class TrieNode:
     def __init__(self):
@@ -51,7 +65,7 @@ def read_documents_from_directory(directory):
             book_id, book_title = extract_id_and_title(filename)
             with open(file_path, "r", encoding="utf-8") as file:
                 content = file.read()
-                documents.append(content)
+                documents.append(preprocess_text(content))  # Use preprocess_text here
                 book_metadata[book_id] = book_title  # Save the book's ID and title
     return documents, book_metadata
 
@@ -67,9 +81,7 @@ def extract_id_and_title(filename):
 def create_inverted_index(documents, book_metadata):
     trie = Trie()
     
-    for book_id, text in zip(book_metadata.keys(), documents):
-        words = text.lower().split()
-        
+    for book_id, words in zip(book_metadata.keys(), documents):
         for position, word in enumerate(words):
             trie.insert(word, book_id, position)  # Pass the position of the word
     
@@ -81,11 +93,44 @@ directory = r"01_search_engine_python/gutenberg_books"
 # Read the documents from the specified directory and get their IDs and titles
 documents, book_metadata = read_documents_from_directory(directory)
 
+
 # Create the inverted index
 inverted_index = create_inverted_index(documents, book_metadata)
 
-# Save the trie structure to "trie_index.json"
+# Delete trie_index.json file if it exists
+if os.path.exists("trie_index.json"):
+    os.remove("trie_index.json")
 with open("trie_index.json", "w", encoding="utf-8") as json_file:
     json.dump(inverted_index.serialize(), json_file, ensure_ascii=False, indent=4)
 
+# Load the Trie from the JSON file
+def load_trie_from_file(file_path):
+    with open(file_path, "r", encoding="utf-8") as json_file:
+        trie_data = json.load(json_file)
+    
+    def deserialize_node(data):
+        node = TrieNode()
+        node.doc_info = defaultdict(list, data['doc_info'])  # Convert back to defaultdict
+        for char, child_data in data['children'].items():
+            node.children[char] = deserialize_node(child_data)
+        return node
+    
+    trie = Trie()
+    trie.root = deserialize_node(trie_data)
+    return trie
 
+# Example of searching for a word in the Trie
+word_to_search = "house"  # You can change the search term as needed
+
+# Load the inverted index from the file
+inverted_index = load_trie_from_file("trie_index.json")
+
+book_info = inverted_index.search(word_to_search)
+
+if book_info:
+    print(f"The word '{word_to_search}' is found in the following books:")
+    for book_id, positions in book_info.items():
+        book_title = book_metadata[book_id]
+        print(f"Book ID: {book_id}, Book Title: {book_title}, Positions: {positions}")
+else:
+    print(f"'{word_to_search}' not found in the documents.")
