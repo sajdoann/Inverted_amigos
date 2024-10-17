@@ -2,6 +2,7 @@ import os
 import ast
 from enum import Enum
 from trie_searcher import load_trie_from_file
+from hashed_index import search_word
 
 # These paths are relative from this script directory
 PATH_TO_TRIE_INDEXER_FILE = "trie_index.json"
@@ -32,6 +33,12 @@ class QueryEngine:
             inverted_index = load_trie_from_file(path)
             results = inverted_index.search(word)
             return results
+        elif indexer == Indexer.HASHED:
+            datamart_path = os.path.join(self.script_dir, PATH_TO_DATAMART)
+            results = search_word(word, datamart_path)
+            return results
+        else:
+            raise ValueError('There are no available indexers with this name.')
         
     def load_metadata_from_file(self, file_path):
         self.metadata = []
@@ -90,9 +97,9 @@ class QueryEngine:
 
 if __name__ == "__main__":
     query_engine = QueryEngine()
-    res = query_engine.search('clock', Indexer.TRIE)
+    res = query_engine.search('clock', Indexer.HASHED)
     field = Field.LANGUAGE
-    fil_res = query_engine.filter_with_metadata(field, 'English', res)
+    fil_res = query_engine.filter_with_metadata(field, 'Gibberish', res)
     print(len(res))
     print(res)
     print(fil_res)
