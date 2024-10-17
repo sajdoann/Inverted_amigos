@@ -28,7 +28,8 @@ class QueryEngine:
     ) -> list[tuple[int, list]]:
         """
         for now we just check if the field contains the value
-        but the field can contain more than just value
+        @TODO
+        but the field can contain more than just the value
         so we can also look with part of the title, or only name/surname of author
         """
         if not self.metadata:
