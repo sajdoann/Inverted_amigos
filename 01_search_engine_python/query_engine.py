@@ -40,7 +40,7 @@ class QueryEngine:
         for r in results:
             book_id = r[0]
             for book in self.metadata:
-                if book["ID"] == book_id:
+                if int(book["ID"]) == book_id:
                     if book[field.value] == value:
                         filtered_results.append(r)
                     break
@@ -72,13 +72,17 @@ class QueryEngine:
 
 if __name__ == "__main__":
     query_engine = QueryEngine()
-    word = ""
-    ind = 0
-    while ind < 50:
-        line, pos = query_engine.get_part_of_book_with_word(84, ind)
-        print(ind, end="\t")
-        word = query_engine.print_coloured(line.split(), pos)
-        ind += 1
+    res = [(11, [12, 13]), (394, [10]), (174, [12])]
+    field = Field.LANGUAGE
+    fil_res = query_engine.filter_with_metadata(field, 'Gibberish', res)
+    print(fil_res)
+    # word = ""
+    # ind = 0
+    # while ind < 50:
+    #     line, pos = query_engine.get_part_of_book_with_word(84, ind)
+    #     print(ind, end="\t")
+    #     word = query_engine.print_coloured(line.split(), pos)
+    #     ind += 1
     # ind = 7613
     # line, pos = query_engine.get_part_of_book_with_word(84, 10000)
     # print(ind, end="\t")
