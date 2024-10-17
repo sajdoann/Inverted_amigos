@@ -4,22 +4,6 @@ import os
 
 
 class QueryEngine:
-    def load_inverted_index_from_file(self, file_path):
-        with open(file_path, "r", encoding="utf-8") as file:
-            self.inverted_index = json.load(file)
-
-    def load_metadata_from_file(self, file_path):
-        self.metadata = []
-        with open(file_path, "r", encoding="utf-8") as file:
-            for line in file:
-                entry = ast.literal_eval(line.strip())
-                self.metadata.append(entry)
-
-    def get_indexes_of_books_with(self, word: str) -> list:
-        word = word.lower()
-        if word in self.inverted_index:
-            return self.inverted_index[word]
-
     def get_indexes_of_books_with_metadata(self, field, value) -> list:
         results = [
             entry["ID"]
@@ -57,13 +41,13 @@ class QueryEngine:
 if __name__ == "__main__":
     query_engine = QueryEngine()
     word = ''
-    ind = 4000
-    # while word != 'home' and ind < 4200:
-    #     line, pos = query_engine.get_part_of_book_with_word(100, ind)
-    #     print(ind, end="\t")
-    #     word = query_engine.print_coloured(line.split(), pos)
-    #     ind += 1
-    ind = 7613
-    line, pos = query_engine.get_part_of_book_with_word(84, 10000)
-    print(ind, end="\t")
-    query_engine.print_coloured(line.split(), pos)
+    ind = 0
+    while ind < 50:
+        line, pos = query_engine.get_part_of_book_with_word(84, ind)
+        print(ind, end="\t")
+        word = query_engine.print_coloured(line.split(), pos)
+        ind += 1
+    # ind = 7613
+    # line, pos = query_engine.get_part_of_book_with_word(84, 10000)
+    # print(ind, end="\t")
+    # query_engine.print_coloured(line.split(), pos)
