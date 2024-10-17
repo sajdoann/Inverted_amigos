@@ -45,14 +45,21 @@ class QueryEngine:
                     position = word_id - curr_pos
                     return " ".join(line), position
                 
-    def print_coloured(self, line_list: list, position: int) -> None:
+    def print_coloured(self, line_list: list, position: int) -> str:
         GREEN = "\33[32m"
         RESET = "\033[0m"
+        word = line_list[position]
         line_list[position] = f"{GREEN}{line_list[position]}{RESET}"
         print(" ".join(line_list))
+        return word
 
 
 if __name__ == "__main__":
     query_engine = QueryEngine()
-    line, pos = query_engine.get_part_of_book_with_word(100, 5600)
-    query_engine.print_coloured(line.split(), pos)
+    word = ''
+    ind = 4000
+    while word != 'home' and ind < 4200:
+        line, pos = query_engine.get_part_of_book_with_word(100, ind)
+        print(ind, end="\t")
+        word = query_engine.print_coloured(line.split(), pos)
+        ind += 1
