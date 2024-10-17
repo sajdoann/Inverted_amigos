@@ -128,7 +128,8 @@ def search_word(word, base_dir, num_buckets=10):
     
     # Buscar la palabra en el bucket
     if word in bucket_data:
-        return f'La palabra "{word}" se encuentra en los documentos: {bucket_data[word]}'
+        return bucket_data[word]
+        # return f'La palabra "{word}" se encuentra en los documentos: {bucket_data[word]}'
     else:
         return None  # Si no se encuentra la palabra, devolver None
 
