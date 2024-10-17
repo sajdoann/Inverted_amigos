@@ -33,7 +33,7 @@ class QueryEngine:
         script_dir = os.path.dirname(__file__)
         file_relative_path = "gutenberg_books/"+str(book_id) + "_.txt"
         file_path = os.path.join(script_dir, file_relative_path)
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding='utf-8') as file:
             curr_pos = 0
             while True:
                 line = file.readline()
@@ -58,8 +58,12 @@ if __name__ == "__main__":
     query_engine = QueryEngine()
     word = ''
     ind = 4000
-    while word != 'home' and ind < 4200:
-        line, pos = query_engine.get_part_of_book_with_word(100, ind)
-        print(ind, end="\t")
-        word = query_engine.print_coloured(line.split(), pos)
-        ind += 1
+    # while word != 'home' and ind < 4200:
+    #     line, pos = query_engine.get_part_of_book_with_word(100, ind)
+    #     print(ind, end="\t")
+    #     word = query_engine.print_coloured(line.split(), pos)
+    #     ind += 1
+    ind = 7613
+    line, pos = query_engine.get_part_of_book_with_word(84, 10000)
+    print(ind, end="\t")
+    query_engine.print_coloured(line.split(), pos)
