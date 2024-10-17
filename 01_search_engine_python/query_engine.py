@@ -113,17 +113,3 @@ class QueryEngine:
         line_list[position] = f"{GREEN}{line_list[position]}{RESET}"
         print(" ".join(line_list))
         return word
-
-
-if __name__ == "__main__":
-    query_engine = QueryEngine()
-
-    res_trie = query_engine.search("winter", Indexer.TRIE)
-    # res_hash = query_engine.search('winter', Indexer.HASHED)
-
-    fil_res = query_engine.filter_with_metadata(Field.LANGUAGE, "English", res_trie)
-
-    book_id, positions = fil_res[0]
-    line, pos = query_engine.get_part_of_book_with_word(book_id, positions[0])
-    
-    query_engine.print_coloured(line.split(), pos)
