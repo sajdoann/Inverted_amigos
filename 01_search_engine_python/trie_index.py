@@ -8,12 +8,12 @@ import re
 
 def preprocess_text(text):
     stop_words = set(stopwords.words('english'))
-    text = re.sub(r'[^\w\s]', ' ', text).replace("_", " ")  # Eliminar puntuación
-    text = re.sub(r'\d+', ' ', text)  # Eliminar números
     result = []
-    for word in text.lower().split():  # Convertir a minúsculas y dividir en palabras
-        if word not in stop_words:
-            result.append(word)
+    for word in text.lower().split():
+        if word in stop_words:
+            result.append('|')
+        else :
+            result.append(word.replace("_", "").replace(".", "").replace(",", "").replace(";", "").replace("\u2019", "'"))
     return result
 
 # Tries (Prefix Trees)
