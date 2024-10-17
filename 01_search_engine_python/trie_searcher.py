@@ -18,7 +18,7 @@ class Trie:
             if char not in node.children:
                 return None
             node = node.children[char]
-        return node.doc_info
+        return list(node.doc_info.items())
 
 # Load the Trie from the JSON file
 def load_trie_from_file(file_path):
