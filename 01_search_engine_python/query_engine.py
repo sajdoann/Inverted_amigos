@@ -72,7 +72,6 @@ class QueryEngine:
     def filter_with_metadata(self, field: Field, value: str, results: list) -> list:
         """
         for now we just check if the field contains the value
-        @TODO
         but the field can contain more than just the value
         so we can also look with part of the title, or only name/surname of author
         """
@@ -86,7 +85,7 @@ class QueryEngine:
             book_id = r[0]
             for book in self.metadata:
                 if int(book["ID"]) == int(book_id):
-                    if book[field.value] == value:
+                    if value.lower() in book[field.value].lower():
                         filtered_results.append(r)
                     break
         return filtered_results
