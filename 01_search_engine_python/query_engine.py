@@ -71,8 +71,9 @@ class QueryEngine:
 
     def filter_with_metadata(self, field: Field, value: str, results: list) -> list:
         """
-        for now we just check if the field contains the value
-        but the field can contain more than just the value
+        Filtering the results to only return those of which
+        contains the value in the field in their metadata
+        The field can contain more than just the value,
         so we can also look with part of the title, or only name/surname of author
         """
         if not self.metadata:
