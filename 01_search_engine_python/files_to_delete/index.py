@@ -65,7 +65,7 @@ def create_inverted_index(documents, book_metadata):
     return trie
 
 # Specify the directory where the books are stored
-directory = r"C:\University\Big Data\Inverted Amigos\Inverted_amigos\01_search_engine_python\gutenberg_books"
+directory = "01_search_engine_python\gutenberg_books"
 
 # Read the documents from the specified directory and get their IDs and titles
 documents, book_metadata = read_documents_from_directory(directory)
