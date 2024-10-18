@@ -39,7 +39,7 @@ def load_trie_from_file(file_path):
 
 if __name__ == '__main__':
     # Example of searching for a word in the Trie
-    word_to_search = "house"  # You can change the search term as needed
+    word_to_search = "cloak"  # You can change the search term as needed
 
     # Load the inverted index from the file
     inverted_index = load_trie_from_file("trie_index.json")

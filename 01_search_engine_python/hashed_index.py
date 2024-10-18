@@ -133,17 +133,12 @@ def search_word(word, base_dir, num_buckets=10):
     else:
         return None  # Si no se encuentra la palabra, devolver None
 
-if __name__ == '__main__':
-
-     # Load documents from the gutenberg_books folder
+def index_all_books(directory, books, indexed, datamart):
     documents = {}
-    current_dir = os.path.dirname(__file__)
-    folder = 'gutenberg_books'
-    datamart = os.path.join(current_dir, 'Datamart')
-    folder_path = os.path.join(current_dir, folder)
     books_indexed = dict()
-    books_indexed_doc = os.path.join(current_dir, 'indexed_docs.txt')
-
+    datamart = os.path.join(directory, datamart)
+    books_indexed_doc = os.path.join(directory, indexed)
+    books = os.path.join(directory, books)
     #si el arhchivo indexed_docs.txt existe, cargar los datos, si no, lo crea
     if os.path.exists(books_indexed_doc):
         with open(books_indexed_doc, 'r') as file:
@@ -152,14 +147,13 @@ if __name__ == '__main__':
         with open(books_indexed_doc, 'w') as file:
             json.dump(books_indexed, file)
 
-
-    for filename in os.listdir(folder_path):
+    for filename in os.listdir(books):
         if filename.endswith('.txt'):
-            with open(os.path.join(folder_path, filename), 'r', encoding='utf-8') as file:
-                doc_id = int(filename.split('_')[0])  # Extract the doc number before the underscore and convert to int
+            with open(os.path.join(books, filename), 'r', encoding='utf-8') as file:
+                doc_id = int(filename.split('_')[0])  # Extraer el número de documento antes del guion bajo y convertir a int
                 content = file.read()
                 documents[doc_id] = content
-        
+
     for doc_id, content in documents.items():
         if str(doc_id) in books_indexed:
             print(f'Document {doc_id} already indexed!')
@@ -167,10 +161,15 @@ if __name__ == '__main__':
         print(doc_id)
         content = preprocess_text(content)
         content = tokenize(content)
-        inverted_index = insert_document(doc_id, content, datamart)
+        insert_document(doc_id, content, datamart)
         books_indexed[doc_id] = True
         with open(books_indexed_doc, 'w') as file:
             json.dump(books_indexed, file)
-            print(f'Document {doc_id} indexed successfully!')
 
-    print(search_word('chapter', datamart))
+if __name__ == '__main__':
+    current_dir = os.path.dirname(__file__)
+    books = 'gutenberg_books'
+    datamart = 'Datamart'
+    indexed = 'indexed_docs.txt'
+    index_all_books(current_dir, books, indexed, datamart)
+    print(search_word('cloak', datamart))

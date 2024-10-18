@@ -61,7 +61,7 @@ if __name__ == '__main__':
     # Load documents from the gutenberg_books folder
     documents = {}
     current_dir = os.path.dirname(__file__)
-    folder = 'gutenberg_books'
+    folder = 'dummy_books'
     folder_path = os.path.join(current_dir, folder)
     inverted_index = dict()
 
@@ -79,4 +79,4 @@ if __name__ == '__main__':
         content = tokenize(content)
         inverted_index = insert_document(doc_id, content, inverted_index)
         with open('another_inverted_index.json', 'a', encoding='utf-8') as json_file:
-            json.dump(dict(inverted_index), json_file, ensure_ascii=False, indent=4)
+            json.dump(inverted_index, json_file, ensure_ascii=False, indent=4)
